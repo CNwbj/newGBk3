@@ -74,11 +74,11 @@
 		</where>
 	</select>
 	<!-- submit -->
-	<select id="submit" parameterMap="java.util.Map" resultType="int" >
+	<select id="submit" parameterType="java.util.Map" resultType="int" >
 		select q_price from quotation where c_id=#{c_id} and m_id=#{m_id} and stateid = 14
 	</select>
 	<!-- 生成sale订单 -->
-	<insert id="saleorder" parameterMap="java.util.Map">
+	<insert id="saleorder" parameterType="java.util.Map">
 		insert into sale values (saleid_seq.nextval,#{c_id},#{c_paymentid},#{c_id},
 		#{material_id},#{price},sysdate,#{goodscount},sysdate,sysdate,sysdate,sysdate,7,7,null,#{sendaddr},6,7,6)
 	</insert>
