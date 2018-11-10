@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sz.zl.dao.ICustomerDAO" >
+	<!-- 根据Id级联 -->
+	 <select id="findCustomerById" resultType="cn.sz.zl.pojo.Customer" parameterType="java.lang.Integer">
+		select * from customer where c_id=#{c_id} 
+	</select> 
+	<!-- 查询所有客户信息-->
+	<select id="findAllCustomer" parameterType="cn.sz.zl.util.CustomerSearchCondition" resultType="cn.sz.zl.pojo.Customer">
+		select * from
+			(select t.rn,c_id,c_idcard_id,c_company,c_name,c_sex,c_pwd,c_phone,c_mail,c_createdate,c_address,c_accountid,stateid,c_work from
+				(select rownum rn,c_id,c_idcard_id,c_company,c_name,c_sex,c_pwd,c_phone,c_mail,c_createdate,c_address,c_accountid,stateid,c_work from customer
+					<where>
+						<if test="c_phone!=null"> and c_phone like '%${c_phone}%' </if>
+						<if test="c_mail!=null"> and c_mail like '%${c_mail}%' </if>
+						<if test="stateid!=null"> and stateid = #{stateid} </if>
+						<if test="c_sex!=null"> and c_sex = #{c_sex} </if>
+					</where>	
+				)t where rn > #{start})
+		where rn <![CDATA[<=]]> #{end}
+	</select>
+	
+	<select id="CountAllCus" parameterType="cn.sz.zl.util.SysUserSearchCondition" resultType="java.lang.Integer">
+		select count(c_id) from Customer
+		<where>
+			<if test="c_phone!=null"> and c_phone like '%${c_phone}%' </if>
+			<if test="c_mail!=null"> and c_mail like '%${c_mail}%' </if>
+			<if test="stateid!=null"> and stateid = #{stateid} </if>
+			<if test="c_sex!=null"> and c_sex = #{c_sex} </if>
+		</where>
+	</select>
+	
+	<update id="disableCustomer" parameterType="java.lang.Integer">
+		update customer set stateid = 0 where c_id = #{c_id}
+	</update>
+	
+	<update id="ablCustomer" parameterType="java.lang.Integer">
+		update customer set stateid = 1 where c_id = #{c_id}
+	</update>
+	
+</mapper>
+	
+
+
+
+
+
+
+

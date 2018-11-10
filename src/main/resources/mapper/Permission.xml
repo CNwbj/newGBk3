@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sz.zl.dao.IPermissionDao">
+	
+	<select id="queryAllPermission" resultType="cn.sz.zl.pojo.Permission">
+		select perid,pname,parentid,percode,icon,perurl from permission where is_dele = 1
+	</select>
+	
+	<select id="queryAllURL" resultType="java.lang.String">
+		select perurl from permission where perurl is not null
+	</select>
+	
+	<select id="queryPermissionByloginname" parameterType="java.lang.String" resultType="cn.sz.zl.pojo.Permission">
+		select p.perid,p.pname,p.parentid,p.percode,p.icon,p.perurl from permission p,sysuser su,usertorole utr,roletopermission rtp 
+		where utr.userid = su.userid and rtp.perid = p.perid and utr.roleid = rtp.roleid and p.is_dele = 1 and su.loginname = #{loginname}
+	</select>
+	
+	<select id="queryPermissionByRoleid" parameterType="java.lang.Integer" resultType="cn.sz.zl.pojo.Permission">
+		select p.perid,p.pname,p.parentid,p.percode,p.icon,p.perurl from permission p,roletopermission rtp 
+		where rtp.perid = p.perid and p.is_dele = 1 and rtp.roleid = # {roleid}
+	</select>
+	
+</mapper>

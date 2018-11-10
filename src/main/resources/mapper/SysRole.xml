@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sz.zl.dao.ISysRoleDao">
+	
+	<resultMap type="cn.sz.zl.pojo.SysRole" id="roleper">
+		<id property="roleid" column="roleid"/>
+		<collection property="perlist" column="perid" javaType="java.util.ArrayList" ofType="cn.sz.zl.pojo.Permission" select="cn.sz.zl.IPermissionDao.queryPermissionByRoleid"></collection>
+	</resultMap>
+	
+	<select id="queryRoleAndPermissionByRoleid" parameterType="java.lang.Integer" resultMap="roleper">
+		select roleid,rolename,roledes from sysrole where is_dele = 1 and roleid = #{roleid}
+	</select>
+	
+	<select id="queryAllRoleWithoutAdmin" resultType="cn.sz.zl.pojo.SysRole">
+		select roleid,rolename,roledes from sysrole where is_dele = 1
+	</select>
+	
+</mapper>
