@@ -1,0 +1,4 @@
+the latest version created by gmc
+--springboot+shriro+ssm :access control
+--timeout kick out
+--fake single sign in
