@@ -101,6 +101,9 @@ function todelete() {
 			location.href="uc/deleteuser?arr="+arr;
 		}
 	}
+}
+function clearcearch(){
+	location.href="uc/findusersplit"
 };
 </script>
 <script>
@@ -170,17 +173,18 @@ $(function(){
         	<tr>
         		<!-- 搜索部分开始 -->
           		<td height="62" background="images/nav04.gif">
-	          		<form action="uc/findusersplitbySc" method="post">
+	          		<form action="uc/findusersplitBySc" method="post">
 			   			<table width="98%" border="0" align="center" cellpadding="0" cellspacing="0">
 			    			<tr>
 				  				<td width="21"><img src="images/ico07.gif" width="20" height="18" /></td>
-				  				<td width="538">查看内容：
-									按账号：<input name="loginname" type="text" size="12" value="${usersc.loginname }"/>
+				  				<td width="538">查看内容：&nbsp;&nbsp;
+									按账号：<input name="loginname" type="text" size="12" value="${usersc.loginname }"/>&nbsp;&nbsp;
 									按状态：<select name="is_dele">
 											<option value="">-不限-</option>
 								 			<option value="1" <c:if test="${usersc.is_dele eq 1}">selected="selected"</c:if>> 在职</option>
 								 			<option value="0" <c:if test="${usersc.is_dele eq 0}">selected="selected"</c:if>> 离职</option>
-									 	</select>
+								 			<option value="3" <c:if test="${usersc.is_dele eq 3}">selected="selected"</c:if>> 休假</option>
+									 	</select>&nbsp;&nbsp;
 									按部门: <select name="deptno">
 											<option value="">-来源方式不限-</option>
 										    <c:forEach items="${deptlist}" var="dept">								
@@ -188,8 +192,17 @@ $(function(){
 												    ${dept.dname }
 												</option>
 										    </c:forEach> 
-										</select>
-									<input name="Submit4" type="submit" class="right-button02" value="查 询" />
+										</select>&nbsp;&nbsp;
+									按岗位: <select name="roleid">
+											<option value="">-岗位不限-</option>
+										    <c:forEach items="${rolelist}" var="role">								
+												<option value="${role.roleid }" <c:if test="${role.roleid eq usersc.roleid}">selected="selected"</c:if>>
+												    ${role.rolename }
+												</option>
+										    </c:forEach> 
+										</select>&nbsp;&nbsp;
+									<input name="Submit4" type="submit" class="right-button02" value="查 询" />&nbsp;&nbsp;&nbsp;
+									<input name="Submit4" type="button" class="right-button02" value="清空" onclick = "clearcearch()"/>
 								</td>
 			    			</tr>
 	          			</table>
@@ -224,12 +237,13 @@ $(function(){
                 			<td height="40" class="font42">
 								<table width="100%" border="0" cellpadding="4" cellspacing="1" bgcolor="#464646" class="newfont03" id="tab">
 				 					<tr class="CTitle" >
-                    					<td height="22" colspan="5" align="center" style="font-size:16px">用户详细列表</td>
+                    					<td height="40" colspan="6" align="center" style="font-size:16px">用户详细列表</td>
                   					</tr>
                   					<tr bgcolor="#EEEEEE">
 				    					<th width="4%" align="center" height="30">选择</th>
                     					<th width="10%">账户</th>
                     					<th width="10%">部门</th>
+                    					<th width="10%">岗位</th>
 										<th width="5%">状态</th>
 										<th width="12%">操作</th>
                   					</tr>
@@ -238,6 +252,7 @@ $(function(){
 								    <td height="20"><input type="checkbox" value="${ul.userid }" name="delid" /></td>
 				                    <td>${ul.loginname }</td>
 				                    <td>${ul.dept.dname }</td>
+				                    <td>${ul.sysrole.rolename }</td>
 				                    <td>${ul.is_dele=="1"?"在职":(ul.is_dele=="0"?"休假":"离职") }</td>
 				                    <td>
 					                    <c:if test="${ul.userid != 1 }">
@@ -260,10 +275,11 @@ $(function(){
         				<tr>
           					<td height="33">
           						<!-- 分页部分开始 -->
-          						<form name="splitform" id="splitform" action="uc/findusersplitbySc" method="post" >
+          						<form name="splitform" id="splitform" action="uc/findusersplitBySc" method="post" >
 								    <input type="hidden" value="${usersc.loginname }" name="loginname" />
 								    <input type="hidden" value="${usersc.is_dele }" name="is_dele" />
 								    <input type="hidden" value="${usersc.deptno }" name="deptno" />
+								    <input type="hidden" value="${usersc.roleid }" name="roleid" />
 								    <input type="hidden" value="${cp }" name="cp" id="cp" />
 									<input type="hidden" value="${ps }" name="ps" id="ps" />
 									<input type="hidden" value="${count }" name="count" id="count" />

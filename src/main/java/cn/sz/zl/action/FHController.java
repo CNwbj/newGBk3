@@ -2,15 +2,11 @@ package cn.sz.zl.action;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +117,38 @@ public class FHController implements Serializable{
 		mv.setViewName("SaleList");
 		return mv;
 		}
+/*	*//**
+	 * 用户购买提交
+	 * @param req
+	 * @return
+	 *//*
+	@RequestMapping(value="/submit")
+	@ResponseBody
+	public Map<String,Object> gosubmit(HttpServletRequest req) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		String cid = req.getParameter("c_id");
+		Integer c_id = Integer.parseInt(cid);
+		String mid = req.getParameter("material_id");
+		Integer material_id = Integer.parseInt(mid);
+		String rprice = req.getParameter("realprice");
+		Integer realprice = Integer.parseInt(rprice);
+		String cpid = req.getParameter("c_paymentid");
+		Integer c_paymentid = Integer.parseInt(cpid);
+		String goods = req.getParameter("goodscount");
+		Integer goodscount = Integer.parseInt(goods);
+		String sendaddr = req.getParameter("sendaddr");
+		map.put("c_id", c_id);
+		map.put("m_id", material_id);
+		map.put("sendaddr", sendaddr);
+		map.put("c_paymentid",c_paymentid);
+		map.put("goodscount", goodscount);
+		map.put("realprice", realprice);
+		iSaleServiceImpl.saleorder(map);
+		log.warn("操作了数据库--insert");
+		Map<String,Object> json=new HashMap<String,Object>();
+		json.put("flag", true);
+		return json;
+	}*/
 	/**
 	 * 用户提交
 	 * @param req
@@ -128,7 +156,6 @@ public class FHController implements Serializable{
 	 */
 	//14成交 //15未成交
 	@RequestMapping("/submit")
-	@ResponseBody
 	public Map<String,Object> bargaining(HttpServletRequest req) {
 		ModelAndView mv = new ModelAndView();
 		String cid = req.getParameter("c_id");
@@ -139,14 +166,7 @@ public class FHController implements Serializable{
 		map.put("c_id", c_id);
 		map.put("m_id", m_id);
 		List<TalkPrice> tp = iSaleServiceImpl.bargaining(map);
-		Collections.sort(tp, new Comparator<TalkPrice>() {
-			@Override
-			public int compare(TalkPrice o1, TalkPrice o2) {
-				// TODO Auto-generated method stub
-				return o1.getTalkdate().compareTo(o2.getTalkdate());
-			}
-		});
-		if(tp.size()==0) {
+		if(tp==null||tp.equals("")) {
 			String realprice1 = req.getParameter("realprice");
 			Integer realprice = Integer.parseInt(realprice1);
 			String cpid = req.getParameter("c_paymentid");
@@ -159,9 +179,9 @@ public class FHController implements Serializable{
 			map.put("c_paymentid",c_paymentid);
 			map.put("goodscount", goodscount);
 			iSaleServiceImpl.saleorder(map);
-			Map<String,Object> mapp=new HashMap<String,Object>();
-			mapp.put("flag", "true");
-			return mapp;
+			Map<String,Object> json=new HashMap<String,Object>();
+			json.put("flag", true);
+			return json;
 		}
 		TalkPrice Tp = tp.get(tp.size()-1);
 		String cpid = req.getParameter("c_paymentid");
@@ -170,14 +190,14 @@ public class FHController implements Serializable{
 		Integer goodscount = Integer.parseInt(goods);
 		String sendaddr = req.getParameter("sendaddr");
 		map.put("sendaddr", sendaddr);
-		map.put("realprice", Tp.getQ_price()*goodscount);
+		map.put("realprice", Tp.getQ_price());
 		map.put("c_paymentid",c_paymentid);
 		map.put("goodscount", goodscount);
 		iSaleServiceImpl.saleorder(map);
 		log.warn("操作了数据库--insert");
-		Map<String,Object> mapp=new HashMap<String,Object>();
-		mapp.put("flag", "true");
-		return mapp;
+		Map<String,Object> json=new HashMap<String,Object>();
+		json.put("flag", true);
+		return json;
 	}
 	/**
 	 * 多条件查询returngoods+分页
@@ -226,9 +246,8 @@ public class FHController implements Serializable{
 	 * @return
 	 */
 	@RequestMapping("/updatestate")
-	public ModelAndView updatestate(HttpServletRequest request,FHQuery query,FHFenYe fy,HttpSession session){
+	public ModelAndView updatestate(HttpServletRequest request,FHQuery query,FHFenYe fy){
 		ModelAndView mv = new ModelAndView();
-		Map<String,Object> map = new HashMap<String,Object>();
 		if(fy==null) {
 			fy = new FHFenYe();
 		}
@@ -241,24 +260,6 @@ public class FHController implements Serializable{
 		Integer counts = iReturnGoodsServiceImpl.queryGoodsRows(query);
 		log.warn("操作了数据库--select");
 		fy.setAllCount(counts);
-		String cid = request.getParameter("c_id").trim();
-		System.out.println(cid);
-		Integer c_id = Integer.parseInt(cid);
-		String s_id = (String)session.getAttribute("returnSaleid");
-		Integer saleid = null;
-		if(s_id!=null) {
-			String s_idd = s_id.trim();
-			System.out.println(s_id);
-			saleid = Integer.parseInt(s_idd);
-		}
-		
-		Integer money = iSaleServiceImpl.queryPay(saleid);
-		iThirdAccountServiceImpl.updateAccount(money);
-		log.warn("扣钱");
-		map.put("money", money);
-		map.put("c_id", c_id);
-		iThirdAccountServiceImpl.updateUserAccount(map);
-		log.warn("退款给客户");
 		String idd = request.getParameter("status");
 		Integer id = Integer.parseInt(idd);
 		iReturnGoodsServiceImpl.updatestate(id);
@@ -273,12 +274,12 @@ public class FHController implements Serializable{
 		return mv;
 		}
 	/**
-	 * 用户点击退货按钮，退货表分页+修改sale表的退货状态
+	 * 退货表分页+修改sale表的退货状态
 	 * @param req
 	 * @return
 	 */
 	@RequestMapping("/returngoods")
-	public ModelAndView returnOrder(HttpServletRequest req,HttpSession session) {
+	public ModelAndView returnOrder(HttpServletRequest req) {
 		ModelAndView mv = new ModelAndView();
 		
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -288,8 +289,9 @@ public class FHController implements Serializable{
 		Integer m_id = Integer.parseInt(mid);
 		String counts = req.getParameter("goodscount");
 		Integer goodscount = Integer.parseInt(counts);
-		String s_id = req.getParameter("saleid");
-		session.setAttribute("returnSaleid", s_id);
+		/*String idd = req.getParameter("saleid");
+		Integer id = Integer.parseInt(idd);
+		iSaleServiceImpl.updateStateid(id);*/
 		
 		map.put("c_id", c_id);
 		map.put("m_id", m_id);
@@ -309,7 +311,6 @@ public class FHController implements Serializable{
 		String mon = req.getParameter("money");
 		Integer money = Integer.parseInt(mon);
 		iThirdAccountServiceImpl.updateAccount(money);
-		log.warn("用户扣款");
 		String cid = req.getParameter("c_id");
 		Integer c_id = Integer.parseInt(cid);
 		String sid = req.getParameter("saleid");
@@ -318,12 +319,12 @@ public class FHController implements Serializable{
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("money", money);
 		map.put("c_id", c_id);
-		log.warn("给第三方打款");
+		log.warn("第三方数据库被操作");
 		iThirdAccountServiceImpl.updateUserAccount(map);
 		return "cate_pencil";
 	}
 	/**
-	 * salelist批量修改
+	 * 批量修改
 	 * @param request
 	 * @param query
 	 * @param fy
@@ -357,38 +358,6 @@ public class FHController implements Serializable{
 		mv.addObject("fy",fy);
 		mv.addObject("lss",lss);
 		mv.setViewName("SaleList");
-		return mv;
-	}
-	@RequestMapping("updateAllgoods")
-	public ModelAndView updateAllGoods(HttpServletRequest request,FHQuery query,FHFenYe fy) {
-		ModelAndView mv = new ModelAndView();
-		String str = request.getParameter("status");
-		String[] strl = str.split(",");
-		List<String> resultList = new ArrayList<>(strl.length);
-		for (String s : strl) {
-			resultList.add(s);
-		}
-		iReturnGoodsServiceImpl.updateAllGoods(resultList);
-		if(fy==null) {
-			fy = new FHFenYe();
-		}
-		if(query == null) {
-			query = new FHQuery();
-		}
-		if(fy.getCp()!=null) {
-			request.setAttribute("cp", fy.getCp());
-		}
-		Integer counts = iReturnGoodsServiceImpl.queryGoodsRows(query);
-		log.warn("操作了数据库--select");
-		fy.setAllCount(counts);
-		List<FHUtil> lf = iReturnGoodsServiceImpl.queryAll(query,fy.getStartRows(),fy.getStopRows());
-		log.warn("操作了数据库--select");
-		mv.addObject("lf",lf);
-		mv.addObject("dataurl","pc/gopage");
-		mv.addObject("pageUrl","SaleList");
-		mv.addObject("allpage",fy.getAllPage());
-		mv.addObject("fy",fy);
-		mv.setViewName("ReturnGoodsList");
 		return mv;
 	}
 	/*@Scheduled(cron = "0/2 * * * * *")

@@ -31,12 +31,15 @@
 				and orderdate<![CDATA[<=]]>#{qEndAddDate}
 			</if>
 	</select>
+	
 	<select id="findallById" parameterType="int" resultType="cn.sz.zl.pojo.ReturnGoods" >
 		select * from returngoods where orderid=#{orderid}
 	</select>
+	
 	<update id="updatestate" parameterType="int">
 		update returngoods set stateid = 1 where orderid = #{orderid}
 	</update>
+	
 	<select id="queryGoodsRows" parameterType="cn.sz.zl.query.FHQuery" resultType="int">
 		select count(orderid) from(
 		select rg.orderid,c.c_id,c.c_name,m.material_id,s.statename from returngoods rg,customer c,material m,state s
@@ -61,5 +64,9 @@
 				and orderdate<![CDATA[<=]]>#{qEndAddDate}
 			</if>
 		</where>
-		</select>
+	</select>
+	<!-- 生成订单，在returngoods表里插入数据 -->
+	<insert id="returnorder" parameterType="Map" >
+		insert into returngoods values(orderid_seq.nextval,#{c_id},#{m_id},0,#{goodscount},sysdate,'没有原因')
+	</insert>
 </mapper>

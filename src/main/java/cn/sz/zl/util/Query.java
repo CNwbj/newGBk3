@@ -7,8 +7,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 public class Query implements Serializable {
 	private String qcid;//用以查询客户姓名
-	private Integer qstateid;//用以查询提交状态
-	private Integer qstateid1;//用以查询审批状态
+	private Integer qstateid;//用以查询状态
+	public Integer getQstateid() {
+		return qstateid;
+	}
+	public void setQstateid(Integer qstateid) {
+		this.qstateid = qstateid;
+	}
 	private Integer qcpaymentid;//用以查询付款方式
 	private Integer qmaterialid;//
 	@DateTimeFormat(pattern="yyyy-MM-dd")
@@ -22,20 +27,8 @@ public class Query implements Serializable {
 	}
 	public void setQcid(String qcid) {
 		this.qcid = qcid;
-	}
-	public Integer getQstateid() {
-		return qstateid;
-	}
-	public void setQstateid(Integer qstateid) {
-		this.qstateid = qstateid;
-	}
-	
-	public Integer getQstateid1() {
-		return qstateid1;
-	}
-	public void setQstateid1(Integer qstateid1) {
-		this.qstateid1 = qstateid1;
-	}
+	}	
+
 	public Integer getQcpaymentid() {
 		return qcpaymentid;
 	}

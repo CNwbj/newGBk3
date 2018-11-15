@@ -15,7 +15,6 @@
 		select s.*,c.*,m.*,cp.payment,st.statename,st2.statename
 		from sale s,customer c,material m,c_payment cp,state st,state st2
 		where s.c_id = c.c_id and s.material_id = m.material_id and s.c_paymentid = cp.c_paymentid and s.stateid = st.stateid and s.column2 = st2.stateid
-		order by s.create_date
 			<if test='saleid!=null and saleid!="" '>
 				and saleid = #{saleid}
 			</if>
@@ -96,13 +95,9 @@
 	</update>
 	<!-- 批量修改 -->
 	<update id="updateAll" parameterType="java.util.List">
-		update sale set stateid = 7 where saleid in
+		update sale set stateid = 7 where stateid in
 		 <foreach collection="list" index="index" item="item" open="(" separator="," close=")">   
             #{item}   
          </foreach>
 	</update>
-	<!-- 拿到客户付款 -->
-	<select id="queryPay" parameterType="int" resultType="int">
-	select pay from sale where saleid = #{saleid}
-	</select>
 </mapper>

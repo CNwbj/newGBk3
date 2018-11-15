@@ -17,7 +17,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.apache.shiro.mgt.SecurityManager;
 @Configuration
 public class ShiroConfigration {
-	
 	    /**
 	     * LifecycleBeanPostProcessor，这是个DestructionAwareBeanPostProcessor的子类，
 	     * 负责org.apache.shiro.util.Initializable类型bean的生命周期的，初始化和销毁。
@@ -50,7 +49,6 @@ public class ShiroConfigration {
 	    	securityManager.setRealm(shiroRealm());
 	        return securityManager;
 	    }
-
 	    /**
 	     * ShiroFilterFactoryBean，是个factorybean，为了生成ShiroFilter。
 	     * 它主要保持了三项数据，securityManager，filters，filterChainDefinitionManager。
@@ -72,22 +70,39 @@ public class ShiroConfigration {
 	        filterChainDefinitionManager.put("/js/**", "anon");
 	        filterChainDefinitionManager.put("/css/**", "anon");
 	        filterChainDefinitionManager.put("/fonts/**", "anon");
+	        filterChainDefinitionManager.put("/tupian/**", "anon");
 	        filterChainDefinitionManager.put("/img/**", "anon");
 	        filterChainDefinitionManager.put("/images/**", "anon");
 	        filterChainDefinitionManager.put("/user2/**", "anon");
 	        filterChainDefinitionManager.put("/uc/islogin", "anon");
 	        filterChainDefinitionManager.put("/uc/getVerifyCode","anon");
-	        		
-	        filterChainDefinitionManager.put("/Forehome.html", "anon");
-	        filterChainDefinitionManager.put("/register.html", "anon");
-	        filterChainDefinitionManager.put("/cate_pencil.html", "anon");
-	        filterChainDefinitionManager.put("/customerDetails.html", "anon");
-	        filterChainDefinitionManager.put("/login_in.html", "anon");
-	        filterChainDefinitionManager.put("/ordersMsg.html", "anon");
-	        filterChainDefinitionManager.put("/purchase.html", "anon");
+	        filterChainDefinitionManager.put("/uc/checkCode", "anon");//
+	        filterChainDefinitionManager.put("/My97DatePicker/**", "anon");
 	        
+	        filterChainDefinitionManager.put("/Forehome.html", "anon");//主页面
+	        filterChainDefinitionManager.put("/register.html", "anon");//注册页面
+	        filterChainDefinitionManager.put("/cate_pencil.html", "anon");//毛笔详情页面
+	        filterChainDefinitionManager.put("/customerDetails.html", "anon");//客户详情页面
+	        filterChainDefinitionManager.put("/login_in.html", "anon");//客户登录页面
+	        filterChainDefinitionManager.put("/ordersMsg.html", "anon");//购买历史订单
+	        filterChainDefinitionManager.put("/purchase.html", "anon");//客户购买页面
 	        
-	        filterChainDefinitionManager.put("/uc/checkCode", "anon");
+	        filterChainDefinitionManager.put("/Forehome.jsp", "anon");//主页面
+	        filterChainDefinitionManager.put("/register.jsp", "anon");//注册页面
+	        filterChainDefinitionManager.put("/cate_pencil.jsp", "anon");//毛笔
+	        filterChainDefinitionManager.put("/customerDetails.jsp", "anon");//客户详情页面
+	        filterChainDefinitionManager.put("/login_in.jsp", "anon");//客户登录页面
+	        filterChainDefinitionManager.put("/Customer_pwd_back.jsp", "anon");//客户密码找回页面
+	        filterChainDefinitionManager.put("/ordersMsg.jsp", "anon");//购买历史订单
+	        filterChainDefinitionManager.put("/purchase.jsp", "anon");//客户购买页面
+	        filterChainDefinitionManager.put("/cate_pencil.jsp", "anon");//客户购买页面
+	        filterChainDefinitionManager.put("/loginpwd_back.jsp", "anon");//客户购买页面
+	        
+	        filterChainDefinitionManager.put("/ca/**", "anon");
+	        filterChainDefinitionManager.put("/ml/**", "anon");
+	        filterChainDefinitionManager.put("/pc/**", "anon");
+	        filterChainDefinitionManager.put("/tpa/**", "anon");
+	        
 	        filterChainDefinitionManager.put("/uc/**", "authc");
 	        filterChainDefinitionManager.put("/**", "authc");
 	        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionManager);

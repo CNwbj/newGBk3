@@ -6,8 +6,17 @@ public class SysUserSearchCondition implements Serializable {
 	private String loginname;
 	private Integer is_dele;
 	private Integer deptno;
+	private Integer roleid;
 	private Integer start;
 	private Integer end;
+
+	public Integer getRoleid() {
+		return roleid;
+	}
+
+	public void setRoleid(Integer roleid) {
+		this.roleid = roleid;
+	}
 
 	public String getLoginname() {
 		return loginname;

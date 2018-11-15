@@ -18,25 +18,25 @@ public class MFenYe implements Serializable {
 		//当前页码结束条数
 		private Integer endRow;
 		
-		public int getPage() {
+		public Integer getPage() {
 			return page;
 		}
 		public void setPage(Integer page) {
 			this.page = page;
 		}
-		public int getRowCount() {
+		public Integer getRowCount() {
 			return rowCount;
 		}
 		public void setRowCount(Integer rowCount) {
 			this.rowCount = rowCount;
 		}
-		public int getRows() {
+		public Integer getRows() {
 			return rows;
 		}
 		public void setRows(Integer rows) {
 			this.rows = rows;
 		}
-		public int getPageCount() {
+		public Integer getPageCount() {
 			
 			if(getRowCount()%getRows()==0) {
 				pageCount=getRowCount()/getRows();
@@ -51,24 +51,26 @@ public class MFenYe implements Serializable {
 		public void setPageCount(Integer pageCount) {
 			this.pageCount = pageCount;
 		}
-		public Query getQuery() {
-			return query;
-		}
-		public void setQuery(Query query) {
-			this.query = query;
-		}
-		public int getStartRow() {
+	
+		public Integer getStartRow() {
 			startRow=(getPage()-1)*getRows();
 			return startRow;
 		}
 		public void setStartRow(Integer startRow) {
 			this.startRow = startRow;
 		}
-		public int getEndRow() {
+		public Integer getEndRow() {
 			endRow=getPage()*getRows();
 			return endRow;
 		}
 		public void setEndRow(Integer endRow) {
 			this.endRow = endRow;
 		}
+		public Query getQuery() {
+			return query;
+		}
+		public void setQuery(Query query) {
+			this.query = query;
+		}
+		
 }

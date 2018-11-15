@@ -87,10 +87,11 @@ public class SysUserServiceImpl implements ISysUserService {
 	@Override
 	public void deleteSysUser(int[] arr) {
 		for (int i = 0; i < arr.length; i++) {
-			sud.deleteSysUser(arr[i]);
+			sud.deleteSysUser(arr[i]);//修改员工的状态
+			sud.deleteUsertorole(arr[i]);//修改员工对应角色表状态
 		}
 	}
-
+	
 	@Override
 	public SysUser queryUserByUserid(Integer userid) {
 		if(userid!=null&&!"".equals(userid)) {
@@ -105,7 +106,17 @@ public class SysUserServiceImpl implements ISysUserService {
 			Map<String,Integer> urmap = new HashMap<String,Integer>();
 			urmap.put("userid", userid);
 			urmap.put("roleid", roleid);
-			sud.updateUserRole((HashMap<String, Integer>) urmap);
+			sud.updateUserRole(urmap);
+		}
+	}
+
+	@Override
+	public void addUsertorole(Integer userid,Integer roleid) {
+		if(userid!=null&&!"".equals(userid)&&roleid!=null&&!"".equals(roleid)) {
+			Map<String,Integer> urmap = new HashMap<String,Integer>();
+			urmap.put("userid", userid);
+			urmap.put("roleid", roleid);
+			sud.addUsertorole(urmap);
 		}
 	}
 }

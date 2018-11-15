@@ -24,7 +24,9 @@ import cn.sz.zl.pojo.SysUser;
 import cn.sz.zl.service.IPermissionService;
 import cn.sz.zl.service.ISysRoleService;
 import cn.sz.zl.service.ISysUserService;
-
+/*
+ * 自定义权限获取
+ */
 @Service
 public class UserPriRealm extends AuthorizingRealm {
 
@@ -34,7 +36,7 @@ public class UserPriRealm extends AuthorizingRealm {
 	private IPermissionService ps;
 	@Autowired
 	private ISysRoleService rs;
-	@Override
+	
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principal) {
 		String loginname = (String) principal.getPrimaryPrincipal();
 
@@ -63,6 +65,7 @@ public class UserPriRealm extends AuthorizingRealm {
 		UsernamePasswordToken token = (UsernamePasswordToken) atoken;
 
 		String loginname = (String) token.getPrincipal();
+		
 		SysUser u = userService.queryUserByLoginname(loginname);
 		if (u == null) {
 			throw new UnknownAccountException("账号密码错误");

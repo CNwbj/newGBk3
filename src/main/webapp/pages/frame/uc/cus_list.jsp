@@ -60,29 +60,9 @@ html { overflow-x: auto; overflow-y: auto; border:0;}
 <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
 <script type="text/javascript" src="js/easyui/jquery.easyui.min.js"></script>
 <script language="javascript">
-
-function selectAll(){
-	var obj = document.fom.elements;
-	for (var i=0;i<obj.length;i++){
-		if (obj[i].name == "delid"){
-			obj[i].checked = true;
-		}
-	}
+function clearcearch(){
+	location.href="uc/findusersplit"
 }
-
-function unselectAll(){
-	var obj = document.fom.elements;
-	for (var i=0;i<obj.length;i++){
-		if (obj[i].name == "delid"){
-			if (obj[i].checked==true){ 
-				obj[i].checked = false;
-				}else{ 
-					obj[i].checked = true;
-				}
-		}
-	}
-}
-
 </script>
 <script>
 $(function(){
@@ -156,19 +136,20 @@ $(function(){
 			    			<tr>
 				  				<td width="21"><img src="images/ico07.gif" width="20" height="18" /></td>
 				  				<td width="538">查看内容：
-									按手机号：<input name="c_phone" type="text" size="12" value="${cusc.c_phone }"/>
-									按邮箱地址：<input name="c_mail" type="text" size="12" value="${cusc.c_mail }"/>
+									按手机号：<input name="c_phone" type="text" size="12" value="${cusc.c_phone }"/>&nbsp;&nbsp;
+									按邮箱地址：<input name="c_mail" type="text" size="12" value="${cusc.c_mail }"/>&nbsp;&nbsp;
 									按状态：<select name="stateid">
 											<option value="">-不限-</option>
 								 			<option value="1" <c:if test="${cusc.stateid eq 1}">selected="selected"</c:if>> 可用</option>
 								 			<option value="0" <c:if test="${cusc.stateid eq 0}">selected="selected"</c:if>> 禁用</option>
-									 	</select>
+									 	</select>&nbsp;&nbsp;
 									按性别：<select name="c_sex">
 											<option value="">-性别不限-</option>
 											<option value="男" <c:if test="${'男' eq cusc.c_sex}">selected="selected"</c:if>>男</option>
 											<option value="女" <c:if test="${'女' eq cusc.c_sex}">selected="selected"</c:if>>女</option>
-										 </select>
-									<input name="Submit4" type="submit" class="right-button02" value="查 询" />
+										 </select>&nbsp;&nbsp;
+									<input name="Submit4" type="submit" class="right-button02" value="查 询" />&nbsp;&nbsp;
+									<input name="Submit4" type="button" class="right-button02" value="清空" onclick = "clearcearch()"/>
 								</td>
 			    			</tr>
 	          			</table>
@@ -188,10 +169,6 @@ $(function(){
           			<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
           	 			<tr>
                				<td height="20">
-               					<span class="newfont07">选择：
-               						<a href="javascript:void(0);" class="right-font08" onclick="selectAll();">全选</a>
-               						---<a href="javascript:void(0);" class="right-font08" onclick="unselectAll();">反选</a>
-               					</span>
 	              			</td>
           	 			</tr>
           	 			<!-- 表格部分开始 -->
@@ -199,24 +176,22 @@ $(function(){
                 			<td height="40" class="font42">
 								<table width="100%" border="0" cellpadding="4" cellspacing="1" bgcolor="#464646" class="newfont03" id="tab">
 				 					<tr class="CTitle" >
-                    					<td height="22" colspan="11" align="center" style="font-size:16px">客户详细列表</td>
+                    					<td height="40" colspan="10" align="center" style="font-size:16px">客户详细列表</td>
                   					</tr>
                   					<tr bgcolor="#EEEEEE">
-				    					<th width="4%" align="center" height="30">选择</th>
-                    					<th width="10%">编号</th>
+                    					<th width="6%">编号</th>
                     					<th width="10%">身份证号</th>
 										<th width="5%">姓名</th>
 										<th width="5%">性别</th>
 										<th width="12%">电话</th>
 										<th width="12%">邮箱</th>
-										<th width="12%">住址</th>
+										<th width="16%">住址</th>
 										<th width="12%">工作</th>
 										<th width="12%">账号状态</th>
 										<th>操作</th>
                   					</tr>
                   					<c:forEach items="${cuslist }" var="cus">
 					                  <tr bgcolor="#FFFFFF">
-									    <td height="20"><input type="checkbox" value="${ul.userid }" name="delid"/></td>
 					                    <td>${cus.c_id }</td>
 					                    <td>${cus.c_idcard_id }</td>
 					                    <td>${cus.c_name }</td>
@@ -276,14 +251,14 @@ $(function(){
 											</td>
 											<td width="1%">
 												<table width="20" border="0" cellspacing="0" cellpadding="0">
-								 							<tr>
-								 								<td width="1%">
-								 									<input name="mypage" id="mypage" type="text" class="right-textfield03" size="1" />
-								 								</td>
-								 								<td width="87%">
-								 									<input name="Submit23222" id="sbt" type="button" class="right-button06" value=" " />
-								 								</td>
-								 							</tr>
+						 							<tr>
+						 								<td width="1%">
+						 									<input name="mypage" id="mypage" type="text" class="right-textfield03" size="1" />
+						 								</td>
+						 								<td width="87%">
+						 									<input name="Submit23222" id="sbt" type="button" class="right-button06" value=" " />
+						 								</td>
+						 							</tr>
 												</table>
 											</td>
 										</tr>

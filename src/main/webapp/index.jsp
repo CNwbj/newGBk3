@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
 	String path = request.getContextPath();
 	String basepath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -25,6 +26,10 @@
 </head>
 
 <body>
+<!-- 禁用页面返回按钮 -->
+<script type="text/javascript">
+	window.history.go(1);
+</script>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td height="147" background="images/top02.gif"><img src="images/top03.gif" width="776" height="147" /></td>
@@ -41,7 +46,7 @@
             <td align="center"><img src="images/ico13.gif" width="107" height="97" /></td>
           </tr>
           <tr>
-            <td height="40" align="center">&nbsp;</td>
+            <td height="40" align="center"><span style="color: red;">${msg }</span></td>
           </tr>
           
         </table></td>
@@ -55,7 +60,7 @@
       </tr>
       <tr>
         <td height="35" class="login-text02">密　码：<br /></td>
-        <td><input name="loginpwd" type="password" size="33" /></td>
+        <td><input name="loginpwd" type="password" size="30" /></td>
       </tr>
       <tr>
         <td height="35" class="login-text02">验证图片：<br /></td>

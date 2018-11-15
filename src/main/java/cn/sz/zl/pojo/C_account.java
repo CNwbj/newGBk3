@@ -11,7 +11,7 @@ public class C_account implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer c_accountid ;
 	private String c_account_type;
-	private String c_account_num;
+	
 	public Integer getC_accountid() {
 		return c_accountid;
 	}
@@ -24,11 +24,6 @@ public class C_account implements Serializable {
 	public void setC_account_type(String c_account_type) {
 		this.c_account_type = c_account_type;
 	}
-	public String getC_account_num() {
-		return c_account_num;
-	}
-	public void setC_account_num(String c_account_num) {
-		this.c_account_num = c_account_num;
-	}
+
 	
 }

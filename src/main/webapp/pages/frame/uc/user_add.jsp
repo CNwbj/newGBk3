@@ -14,9 +14,16 @@
 <link rel="stylesheet" rev="stylesheet" href="css/style.css" type="text/css" media="all" />
 <script language="JavaScript" type="text/javascript">
 function link(){
-		alert('保存成功！');
-	   document.getElementById("fom").action="uc/adduser";
-	   document.getElementById("fom").submit();
+	var loginname = $("#loginname").val();
+		if(loginname.length>0){
+	       alert('保存成功！');
+		   document.getElementById("fom").action="rc/addrole";
+		   document.getElementById("fom").submit();
+		}else{
+			 $("#msg").html("内容不能为空!!");
+			 $("#btn").hide();
+			 $("#bt").hide();
+		}
 	}
 </script>
 
@@ -25,16 +32,28 @@ function link(){
 <script type="text/javascript">
 
 	$(function () {
-		$("#testre").click(function(){
+	    $("#loginname").focus();
+		$("#loginname").blur(function(){
 			var loginname = $("#loginname").val();
-			$.post("uc/checkre",{"loginname":loginname},function(data){
-					if(data!="0"){
-						 $("#msg").html("账号已被注册,请换一个!!");
-					}else{
-						$("#msg").html("可以使用!");
-					}
-			},"json");
+			if(loginname.length>0){
+				$.post("uc/checkre",{"loginname":loginname},function(data){
+						if(data!="0"){
+							 $("#msg").html("账号已被注册,请换一个!!");
+							 $("#btn").hide();
+							 $("#bt").hide();
+						}else{
+							$("#msg").html("可以使用!");
+							$("#btn").show();
+							$("#bt").show();
+						}
+				},"json");
+			}else{
+				 $("#msg").html("内容不能为空!!");
+				 $("#btn").hide();
+				 $("#bt").hide();
+			}
 		});
+		
 	})
 
 </script>
@@ -52,7 +71,7 @@ function link(){
 		<table border="0" cellpadding="0" cellspacing="0" style="width:100%">
 			<tr>
 				<td align="left">
-					<input type="button" name="saveuser" value="保存" class="button" onclick="alert('保存成功！');"/>　
+					<input type="button" id="bt" name="saveuser" value="保存" class="button" onclick="link();"/>　
 					<input type="button" name="goback" value="返回" class="button" onclick="window.history.go(-1);"/>
 				</td>
 			</tr>
@@ -64,7 +83,7 @@ function link(){
 					  		<tr>
 					    		<td nowrap align="right" width="13%">账户名称:</td>
 					    		<td width="41%">
-					    			<input name="loginname" class="text" style="width:154px" type="text" size="40" id="loginname" /><input type="button" id="testre" value="检查用户名是否重复">
+					    			<input name="loginname" id="loginname" class="text" autofocus="autofocus" style="width:154px" type="text" size="40" id="loginname" />
 				        			<span id="msg" class="red"> *</span>
 				        		</td>
 					    	</tr>
@@ -90,14 +109,16 @@ function link(){
                         			</select>
                         		</td>
                         	</tr>
-                        	<%-- <tr>
+                        	<tr>
 					    		<td align="right">用户岗位:</td>
-					    		<td><select name="roleid">
-									<c:forEach items="${rolelist }" var="rl">
-									<option value="${rl.roleid }">${rl.rolename }</option>
-									</c:forEach>
-								</select>
-					  		</tr> --%>
+					    		<td>
+						    		<select name="roleid">
+										<c:forEach items="${rolelist }" var="rl">
+										<option value="${rl.roleid }">${rl.rolename }</option>
+										</c:forEach>
+									</select>
+								</td>
+					  		</tr>
 					  	</table>
 			 			<br />
 					</fieldset>			
@@ -108,7 +129,7 @@ function link(){
   </tr>
   <tr>
 	<td colspan="2" align="center" height="50px">
-		<input type="button" name="Submit" value="保存" class="button" onclick="link();"/>　
+		<input type="button" id="btn" name="Submit" value="保存" class="button" onclick="link();"/>　
 		<input type="button" name="Submit2" value="返回" class="button" onclick="window.history.go(-1);"/>
 	</td>
   </tr>

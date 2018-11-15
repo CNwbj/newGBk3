@@ -21,6 +21,13 @@ body {
 -->
 </style>
 <link href="css/css.css" rel="stylesheet" type="text/css" />
+<script>
+     function myClock(){   //定义一个名为myClock的函数。
+         var date = new Date();  //构造日期对象。
+         document.getElementById("clock").innerHTML = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+     }
+     window.setInterval(myClock,1000);  //间隔是1000ms，重复执行myClock函数中的内容。
+ </script>
 </head>
 
 <body>
@@ -29,7 +36,11 @@ body {
     <td height="60" bgcolor="#99D9EA"><table width="99%" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td width="1%"><img src="images/logo.png" width="560" height="60" border="0" /></a></td>
-        <td width="64%" align="right" style="font-size:12px;vertical-align:bottom;">&copy; 2018 <a href="javascropt:void(0)" style="color:#0099FF;text-decoration:none;">知领互联J26班项目4组金蝶K3</a> 用心,为您</td>
+        <td width="64%" align="right" height="60">
+	        <div>
+	        	<span id="clock" style="font-size: 20px;"></span>
+	    	</div>
+    	</td>
       </tr>
     </table></td>
   </tr>

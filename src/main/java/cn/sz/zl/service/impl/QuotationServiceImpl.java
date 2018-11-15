@@ -24,11 +24,11 @@ public class QuotationServiceImpl implements IQuotationService {
 	public List<Quotation> findAllQuotation() {
 		// TODO Auto-generated method stub
 		return qd.findAllQuotation();
-	}
+	 }
 
 	@Override
 	public List<Quotation> queryQuotationByFy(MFenYe fy) {
-		if(fy.getPage()==0) {
+		if(fy.getPage()==null) {
 			fy.setPage(1);
 		}
 		fy.setRowCount(qd.queryRowsByQuery(fy.getQuery()));
@@ -49,6 +49,24 @@ public class QuotationServiceImpl implements IQuotationService {
 	@Override
 	public boolean insertQuotation(Quotation quotation) {
 		return qd.insertQuotation(quotation);
+	}
+
+	@Override
+	public boolean deleteQuotation(Integer quotationid) {
+		// TODO Auto-generated method stub
+		return qd.deleteQuotation(quotationid);
+	}
+
+	@Override
+	public boolean updateTJStateById(Integer quotationid) {
+		// TODO Auto-generated method stub
+		return qd.updateTJStateById(quotationid);
+	}
+
+	@Override
+	public boolean updateSHStateById(Integer quotationid) {
+		// TODO Auto-generated method stub
+		return qd.updateSHStateById(quotationid);
 	}
 
 }

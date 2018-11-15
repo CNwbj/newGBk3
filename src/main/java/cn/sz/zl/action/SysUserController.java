@@ -2,8 +2,8 @@ package cn.sz.zl.action;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +14,7 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.junit.runners.Parameterized.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,6 +41,15 @@ public class SysUserController {
 	private IDeptService ds;
 	@Autowired
 	private ISysRoleService rs;
+	//存储已登录的用户,实现不能重复登录
+	private static HashSet<String> userset=new HashSet<String>();
+	public static HashSet<String> getUserset() {
+		return userset;
+	}
+
+	public static void setUserset(HashSet<String> userset) {
+		SysUserController.userset = userset;
+	}
 
 	@RequestMapping("/getVerifyCode")
 	public void generate(HttpServletResponse response, HttpSession session) {
@@ -61,25 +71,35 @@ public class SysUserController {
 		Subject subject = SecurityUtils.getSubject();
 		String verifyCode= (String) session.getAttribute("verifyCode");
         if(!code.equalsIgnoreCase(verifyCode)){
-            return "redirect:/uc/logout";
+        	session.setAttribute("msg", "验证码输入有误!!!!");
+            return "index";
+        }
+        if(!userset.isEmpty()&&userset.contains(user.getLoginname())) {
+        	session.setAttribute("msg", "账号已经被登陆!!!!");
+        	return "index";
         }
 
 		UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginname(), user.getLoginpwd());
 		try {
 			subject.login(token);
+			userset.add(user.getLoginname());
 		} catch (UnknownAccountException e) {
+			userset.remove(user.getLoginname());
 			return "403";
 		} catch (IncorrectCredentialsException e) {
+			userset.remove(user.getLoginname());
 			return "500";
 		}
 		return "pages/main";
 	}
-
+	
 	@RequestMapping(value = "logout")
 	public String logout(HttpSession session) {
-
+		
 		Subject subject = SecurityUtils.getSubject();
+		String loginname=(String) session.getAttribute("currentUser");
 		subject.logout();
+		userset.remove(loginname);
 		return "index";
 	}
 
@@ -94,9 +114,11 @@ public class SysUserController {
 	}
 
 	@RequestMapping(value = "adduser")
-	public String addUser(SysUser user) {
+	public String addUser(SysUser user,@RequestParam("roleid") Integer roleid) {
 		if (user != null) {
 			sus.addSysUser(user);
+			SysUser theuser=sus.queryUserByLoginname(user.getLoginname());
+			sus.addUsertorole(theuser.getUserid(),roleid);
 		}
 		return "redirect:/uc/findusersplit";
 	}
@@ -125,6 +147,8 @@ public class SysUserController {
 	@RequestMapping(value = "preupdate")
 	public String preUpdateUser(Integer userid, Model model) {
 		SysUser user = sus.queryUserByUserid(userid);
+		List<Dept> deptlist = ds.queryAllDept();
+		model.addAttribute("deptlist", deptlist);
 		model.addAttribute("user", user);
 		return "pages/frame/uc/user_update";
 	}
@@ -147,6 +171,7 @@ public class SysUserController {
 		usersc.setLoginname(null);
 		usersc.setIs_dele(null);
 		usersc.setDeptno(null);
+		usersc.setRoleid(null);
 		usersc.setStart((cp - 1) * ps);
 		usersc.setEnd(cp * ps);
 		List<SysUser> userlist = sus.queryAllUser(usersc);
@@ -164,7 +189,7 @@ public class SysUserController {
 		return "pages/frame/uc/user_list";
 	}
 
-	@RequestMapping(value = "findusersplitbySc", method = RequestMethod.POST)
+	@RequestMapping(value = "findusersplitBySc", method = RequestMethod.POST)
 	public String findUserSplitByCondition(HttpServletRequest request, Model model) {
 		SysUserSearchCondition usersc = new SysUserSearchCondition();
 		Integer cp = 1, ps = 5;
@@ -174,12 +199,15 @@ public class SysUserController {
 		}
 		String ln = request.getParameter("loginname");
 		String loginname = "".equals(ln) || ln == null ? null : ln;
-
+		
 		String isdele = request.getParameter("is_dele");
 		String isd = "".equals(isdele) || isdele == null ? null : isdele;
 
 		String de = request.getParameter("deptno");
 		String dep = "".equals(de) || de == null ? null : de;
+		
+		String ro = request.getParameter("roleid");
+		String role = "".equals(ro) || ro == null ? null : ro;
 
 		Integer is_dele = null;
 		if (isd != null) {
@@ -189,10 +217,15 @@ public class SysUserController {
 		if (dep != null) {
 			deptno = Integer.parseInt(dep);
 		}
+		Integer roleid = null;
+		if (role != null) {
+			usersc.setRoleid(roleid);
+		}
 
 		usersc.setLoginname(loginname);
 		usersc.setIs_dele(is_dele);
 		usersc.setDeptno(deptno);
+		usersc.setRoleid(roleid);
 		usersc.setStart((cp - 1) * ps);
 		usersc.setEnd(cp * ps);
 

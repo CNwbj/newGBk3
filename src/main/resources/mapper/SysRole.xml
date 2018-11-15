@@ -11,8 +11,43 @@
 		select roleid,rolename,roledes from sysrole where is_dele = 1 and roleid = #{roleid}
 	</select>
 	
-	<select id="queryAllRoleWithoutAdmin" resultType="cn.sz.zl.pojo.SysRole">
-		select roleid,rolename,roledes from sysrole where is_dele = 1
+	<select id="queryRoleByRoleid" parameterType="java.lang.Integer" resultType="cn.sz.zl.pojo.SysRole">
+		select roleid,rolename,roledes from sysrole where roleid = #{roleid}
 	</select>
 	
+	<select id="queryAllRoleWithoutAdmin" resultType="cn.sz.zl.pojo.SysRole">
+		select roleid,rolename,roledes from sysrole where is_dele = 1 order by roleid 
+	</select>
+	
+	<insert id="addSysRole" parameterType="cn.sz.zl.pojo.SysRole">
+		insert into sysrole values(sysroleseq.nextval,#{rolename},#{roledes},1)
+	</insert>
+	
+	<insert id="addRoletopermission" parameterType="java.util.Map">
+		insert into roletopermission values(roletopermissionseq.nextval,#{roleid},#{perid},1)
+	</insert>
+	
+	<update id="deleteSysRole" parameterType="java.lang.Integer">
+		update sysrole set is_dele = 0 where roleid = #{roleid}
+	</update>
+	
+	<update id="delteusertorole" parameterType="java.lang.Integer">
+		update usertorole set is_dele = 0 where roleid=#{roleid}
+	</update>
+	
+	<update id="deleteRoletopermission" parameterType="java.util.Map">
+		update roletopermission set is_dele = 0 where roleid=#{roleid} and perid=#{perid}
+	</update>
+	
+	<select id="checkRoleRepeat" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select count(roleid) from sysrole where rolename = #{rolename}
+	</select>
+	
+	<select id="queryRoleByRolename" parameterType="java.lang.String" resultType="cn.sz.zl.pojo.SysRole">
+		select roleid,rolename,roledes from sysrole where rolename = #{rolename}
+	</select>
+	
+	<select id="queryrPerididByRoleid" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select perid from roletopermission where is_dele=1 and roleid = #{roleid}
+	</select>
 </mapper>

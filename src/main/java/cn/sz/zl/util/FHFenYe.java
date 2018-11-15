@@ -7,7 +7,7 @@ public class FHFenYe {
 	// current page
 	private Integer cp = 1;
 	// page show rows
-	private Integer ps = 2;
+	private Integer ps = 4;
 	// data count
 	private Integer allCount;
 	

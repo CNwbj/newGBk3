@@ -1,8 +1,10 @@
 package cn.sz.zl.pojo;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ReturnGoods {
+public class ReturnGoods implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private Integer orderid;
 	private Integer c_id;
 	private Integer material_id;

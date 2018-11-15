@@ -2,42 +2,53 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.sz.zl.dao.IQuotationDAO">
-	<!-- 根据Id级联 -->
-	<select id="findQuotationById" resultType="cn.sz.zl.pojo.Quotation" parameterType="java.lang.Integer">
-		select * from quotation where quotationid=#{quotationid} 
-	</select>
-	<!-- 查询所有的报价单 -->
-	<select id="findAllQuotation" resultType="cn.sz.zl.pojo.Quotation">
-	 	select * from quotation
-	</select>
+
+	<select id="findQuotationById" parameterType="java.lang.Integer" resultMap="findallQuoations">
+ 		select * from quotation where quotationid = #{quotationid}
+ 	</select>
+
+	<resultMap type="cn.sz.zl.pojo.Quotation" id="findallQuoations">
+		
+ 		<!-- 级联查询状态 -->
+ 		<association property="state0" column="stateid12" javaType="cn.sz.zl.pojo.State" select="cn.sz.zl.dao.IStateDAO.findStateById"></association>		
+ 		<association property="state1" column="stateid13" javaType="cn.sz.zl.pojo.State" select="cn.sz.zl.dao.IStateDAO.findStateById"></association>		
+ 		<association property="state2" column="stateid7" javaType="cn.sz.zl.pojo.State" select="cn.sz.zl.dao.IStateDAO.findStateById"></association>		 		 
+ 		<association property="state3" column="stateid22" javaType="cn.sz.zl.pojo.State" select="cn.sz.zl.dao.IStateDAO.findStateById"></association>	
+ 		<association property="state4" column="stateid23" javaType="cn.sz.zl.pojo.State" select="cn.sz.zl.dao.IStateDAO.findStateById"></association>		
+ 		<association property="state5" column="stateid14" javaType="cn.sz.zl.pojo.State" select="cn.sz.zl.dao.IStateDAO.findStateById"></association>		
+ 		<association property="state6" column="stateid15" javaType="cn.sz.zl.pojo.State" select="cn.sz.zl.dao.IStateDAO.findStateById"></association>		 		 
+ 		<association property="state7" column="stateid6" javaType="cn.sz.zl.pojo.State" select="cn.sz.zl.dao.IStateDAO.findStateById"></association>		
+ 		
+ 		<association property="sysrole2" column="roleid2" javaType="cn.sz.zl.pojo.SysRole" select="cn.sz.zl.dao.IQuotationDAO.findRoleById"></association>		
+		<association property="sysrole7" column="roleid7" javaType="cn.sz.zl.pojo.SysRole" select="cn.sz.zl.dao.IQuotationDAO.findRoleById"></association>		 
+		<association property="sysrole8" column="roleid8" javaType="cn.sz.zl.pojo.SysRole" select="cn.sz.zl.dao.IQuotationDAO.findRoleById"></association>				
+		<!-- 级联查询物品名称 -->
+		<association property="material" column="material_id" javaType="cn.sz.zl.pojo.Material" select="cn.sz.zl.dao.IMaterialDAO.findMaterialInfoById"></association>
+		<!-- 级联查询付款方式 -->
+ 		<association property="cpayment" column="c_paymentid" javaType="cn.sz.zl.pojo.C_payment" select="cn.sz.zl.dao.IPaymentDAO.findPaymentById"></association>		
+		<!-- 级联查询客户信息 -->
+		<association property="customer" column="c_id" javaType="cn.sz.zl.pojo.Customer" select="cn.sz.zl.dao.ICustomerDAO.findCustomerById"></association>		
+	</resultMap>
 	
-	
+	<select id="findRoleById" parameterType="java.lang.Integer" resultType="cn.sz.zl.pojo.SysRole">
+		select *from sysrole where roleid=#{roleid}
+	</select>
 	<!-- 多条件分页查询 -->	
-		<select id="queryQuotationByFy" parameterType="cn.sz.zl.util.MFenYe" resultMap="findSplit">
+		<select id="queryQuotationByFy" parameterType="cn.sz.zl.util.MFenYe" resultMap="findallQuoations">
 		select * from (select t.*,rownum r from (select * from quotation 
 			<where>
 				<if test="query!=null">
 					<if test="query.qcid!=null and query.qcid!=''">
 						and c_id like '%${query.qcid}%'
 					</if>
-					<if test="query.qstateid!=null and query.qstateid!=''">
-						and stateid =#{query.qstateid}
-					</if>
-					<if test="query.qstateid1!=null and query.qstateid1!=''">
-						and stateid1 =#{query.qstateid1}
-					</if>
+				
 					<if test="query.qcpaymentid!=null and query.qcpaymentid!=''">
-						and cpaymentid =#{query.qcpaymentid}
+						and c_paymentid =#{query.qcpaymentid}
 					</if>
 					<if test="query.qmaterialid!=null and query.qmaterialid!=''">
-						and materialid =#{query.qmaterialid}
+						and material_id =#{query.qmaterialid}
 					</if>
-					<if test="query.qenddate!=null">
-						and ofrvail>=#{query.qenddate} 
-					</if>
-					<if test="query.qstartdate!=null">
-						and quotationdate<![CDATA[<=]]>#{query.qstartdate}
-					</if>		
+	
 				</if>
 			</where>
 		)t) where r>#{startRow} and r<![CDATA[<]]>=#{endRow}
@@ -46,91 +57,90 @@
 	<select id="queryRowsByQuery" parameterType="cn.sz.zl.util.Query" resultType="java.lang.Integer">
 		select count(*) from quotation
 			<where>
-				<if test="qcid!=null and qcid!=''">
+					<if test="qcid!=null and qcid!=''">
 						and c_id like '%${qcid}%'
 					</if>
-					<if test="qstateid!=null and qstateid!=''">
-						and stateid =#{qstateid}
-					</if>
-					<if test="qstateid1!=null and qstateid1!=''">
-						and stateid1 =#{qstateid1}
-					</if>
+				
 					<if test="qcpaymentid!=null and qcpaymentid!=''">
-						and cpaymentid =#{qcpaymentid}
+						and c_paymentid =#{qcpaymentid}
 					</if>
 					<if test="qmaterialid!=null and qmaterialid!=''">
-						and materialid =#{qmaterialid}
+						and material_id =#{qmaterialid}
 					</if>
-					<if test="qenddate!=null">
-						and ofrvail>=#{qenddate} 
-					</if>
-					<if test="qstartdate!=null">
-						and quotationdate<![CDATA[<=]]>#{qstartdate}
-					</if>		
+		
 			</where>
 	</select>
-	<resultMap type="cn.sz.zl.pojo.Quotation" id="findSplit">
-		<id column="quotationid" property="quotationid"/>
-		<result column="material_id" property="material_id"/>
-		<result column="c_paymentId" property="c_paymentId"/>
-		<result column="quotation_date" property="quotation_date"/>
-		<result column="ofr_vail" property="ofr_vail"/>
-		<result column="c_id" property="c_id"/>
-
-		<!-- 级联查询物品名称 -->
-		<association property="material" column="material_id" javaType="cn.sz.zl.pojo.Material" select="cn.sz.zl.dao.IMaterialDAO.findMaterialInfoById"></association>
-		<!-- 级联查询付款方式 -->
- 		<association property="cpaymentid" column="c_paymentId" javaType="cn.sz.zl.pojo.C_payment" select="cn.sz.zl.dao.IPaymentDAO.findPaymentById"></association>
-		<!-- 级联查询提交状态 -->
-		<association property="state" column="stateid" javaType="cn.sz.zl.pojo.State" select="cn.sz.zl.dao.IStateDAO.findStateById"></association>
-		<!-- 级联查询客户信息 -->
-		<association property="customer" column="c_id" javaType="cn.sz.zl.pojo.Customer" select="cn.sz.zl.dao.ICustomerDAO.findStateById"></association>		
-	</resultMap>
-	<!-- 添加 -->
+	
+	<!-- 添加报价单-->
+	
 	<insert id="insertQuotation" parameterType="cn.sz.zl.pojo.Quotation">
-			insert into Quotation 
+		insert into Quotation (material_id,c_paymentid,quotation_date,ofr_vail,c_id,remarks,quotationid,q_price,stateid14,paycount)
+		values(#{material_id},#{c_paymentid},#{quotation_date},#{ofr_vail},#{c_id},#{remarks},saleid_seq.nextval,#{q_price},#{paycount},)
+		<!-- 	insert into Quotation 
  		<trim prefix="(" suffix=")" suffixOverrides="," >
  			<if test="quotationid != null" > quotationid, </if>
-			<if test="materialid != null" > materialid, </if>
-			<if test="cpaymentid != null" > cpaymentid, </if>
-			<if test="quotationdate != null" > quotationdate, </if>
-			<if test="ofrvail != null" > ofrvail, </if>
-			<if test="cid != null" > cid, </if>
-			<if test="stateid != null" > stateid, </if>
-			<if test="errid != null" > errid, </if>
-			<if test="remarks != null" > remarks, </if>
-			<if test="stateid1 != null" > stateid1, </if>
+			<if test="material_id != null" > material_id, </if>
+			<if test="c_paymentid != null" > c_paymentid, </if>
+			<if test="quotation_date != null" > quotation_date, </if>
+			<if test="ofr_vail != null" > ofr_vail, </if>
+			<if test="c_id != null" > c_id, </if>
+			<if test="q_price != null" > q_price, </if>
+			<if test=" paycount!= paycount" > paycount, </if>
+			<if test="stateid12 != null" > stateid12, </if>	
+			<if test="remarks != null" > remarks, </if>		
  		</trim>
+ 		
  		<trim prefix="values (" suffix=")" suffixOverrides="," >
  			<if test="quotationid != null" > #{quotationid}, </if>
-			<if test="materialid != null" > #{materialid}, </if>
-			<if test="cpaymentid != null" > #{cpaymentid}, </if>
-			<if test="quotationdate != null" > #{quotationdate}, </if>
-			<if test="ofrvail != null" > #{ofrvail}, </if>
-			<if test="cid != null" > #{cid}, </if>
-			<if test="stateid != null" > #{stateid}, </if>
-			<if test="errid != null" > #{errid} , </if>
-			<if test="remarks != null" > #{remarks}, </if>
-			<if test="stateid1 != null" > #{stateid1}, </if>
- 		</trim>
+			<if test="material_id != null" > #{material_id}, </if>
+			<if test="c_paymentid != null" > #{c_paymentid}, </if>
+			<if test="quotation_date != null" > #{quotation_date}, </if>
+			<if test="ofr_vail != null" > #{ofr_vail}, </if>
+			<if test="c_id != null" > #{c_id}, </if>
+			<if test="q_price != null" > #{q_price}, </if>
+			<if test=" paycount!= paycount" > #{paycount}, </if>
+			<if test="stateid12 != null" > #{stateid12}, </if>		
+			<if test="remarks != null" > #{remarks}, </if>			
+ 		</trim> -->
 	</insert>
+	<!-- 根据状态编号修改当前提交状态 -->
+	<update id="updateTJStateById" parameterType="java.lang.Integer">
+		update quotation set stateid6 =7 where quotationid = #{quotationid}
+	</update>
+	<!-- 根据状态编号修改当前审核状态 -->
+	<update id="updateSHStateById" parameterType="java.lang.Integer">
+		update quotation set stateid22 =22 where quotationid = #{quotationid}
+	</update>
+	<!-- 根据状态编号修改当前是否完结的状态 -->
 	<!-- 修改 -->
 	<update id="UpdateQuotation" parameterType="cn.sz.zl.pojo.Quotation">
 		update Quotation 
 			<set>
-				<if test="quotationid != null"> quotationid = #{quotationid}, </if>
-				<if test="materialid != null" > materialid=#{materialid}, </if>
-				<if test="cpaymentid != null" > cpaymentid=#{cpaymentid}, </if>
-				<if test="quotationdate != null" > quotationdate=#{quotationdate}, </if>
-				<if test="ofrvail != null" > ofrvail=#{ofrvail}, </if>
-				<if test="cid != null" > cid=#{cid}, </if>
-				<if test="stateid != null" > stateid=#{stateid}, </if>
-				<if test="errid != null" > errid=#{errid} , </if>
+				
+				<if test="material_id != null" > material_id=#{material_id}, </if>
+				<if test="c_paymentid != null" > c_paymentid=#{c_paymentid}, </if>				
+				<if test="quotation_date != null" > quotation_date=#{quotation_date}, </if>				
+				<if test="ofr_vail != null" > ofr_vail=#{ofr_vail}, </if>				
+				<if test="c_id != null" > c_id=#{c_id}, </if>
+				<if test="stateid6 != null" > stateid6=#{stateid6}, </if>				
 				<if test="remarks != null" > remarks=#{remarks}, </if>
-				<if test="stateid1 != null" > stateid1=#{stateid1}, </if>			
+				<if test="q_price != null" > q_price=#{q_price}, </if>	
+				<if test="stateid7 != null" > stateid7=#{stateid7}, </if>
+								
+				<if test="stateid23 != null" > stateid23=#{stateid23}, </if>				
+				<if test="stateid14 != null" > stateid14=#{stateid14}, </if>				
+				
+				<if test="roleid2 != null" > roleid2=#{roleid2}, </if>				
+				<if test="roleid7 != null" > roleid7=#{roleid7}, </if>	
+				<if test="roleid8 != null" > roleid8=#{roleid8}, </if>				
+					
 			</set>	
+		where quotationid=#{quotationid}
 	</update>
-
+	<!-- 删除 -->
+	<delete id="deleteQuotation" parameterType="int[]">
+		delete from Quotation where quotationid=#{quotationid} 
+	</delete>
 </mapper>
 
 

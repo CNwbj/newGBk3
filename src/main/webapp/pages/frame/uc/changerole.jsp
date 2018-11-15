@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"  pageEncoding="utf-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%
 	String path = request.getContextPath();
 	String basepath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -30,7 +28,7 @@
 	岗位：
 	<select name="roleid">
 		<c:forEach items="${rolelist }" var="rl">
-		<option value="${rl.roleid }">${rl.rolename }</option>
+		<option value="${rl.roleid }" <c:if test="${user.sysrole.roleid eq rl.roleid}">selected="selected"</c:if>>${rl.rolename }</option>
 		</c:forEach>
 	</select>
 </form><br/><br />

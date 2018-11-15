@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Dept implements Serializable {
 	private Integer deptno;
 	private String dname;
-	private Integer is_dele;
+	private Integer usercount;
 
 	public Integer getDeptno() {
 		return deptno;
@@ -23,13 +23,12 @@ public class Dept implements Serializable {
 		this.dname = dname;
 	}
 
-	public Integer getIs_dele() {
-		return is_dele;
+	public Integer getUsercount() {
+		return usercount;
 	}
 
-	public void setIs_dele(Integer is_dele) {
-		this.is_dele = is_dele;
+	public void setUsercount(Integer usercount) {
+		this.usercount = usercount;
 	}
-	
-	
+
 }

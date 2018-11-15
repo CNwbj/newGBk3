@@ -21,4 +21,10 @@ public interface IQuotationDAO {
 	public boolean  UpdateQuotation(Quotation quotation);
 	//添加
 	public boolean insertQuotation(Quotation quotation);
+	//删除
+	public boolean deleteQuotation(Integer quotationid);
+	
+	public boolean updateTJStateById(Integer quotationid);
+	public boolean updateSHStateById(Integer quotationid);
+	
 }

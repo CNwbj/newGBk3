@@ -14,11 +14,11 @@ public class DeptServiceImpl implements IDeptService {
 
 	@Autowired
 	private IDeptDao dd;
-
+	@Override
 	public List<Dept> queryAllDept() {
 		return dd.queryAllDept();
 	}
-
+	@Override
 	public Dept queryDeptByDeptno(Integer deptno) {
 		if (deptno != null && !"".equals(deptno)) {
 			return dd.queryDeptByDeptno(deptno);
@@ -26,9 +26,24 @@ public class DeptServiceImpl implements IDeptService {
 		return null;
 	}
 
-
+	@Override
 	public void addDept(Dept dept) {
-		
+		if(dept!=null) {
+			dd.addDept(dept);
+		}
+	}
+
+	@Override
+	public List<Dept> queryAllDeptandUserCount() {
+		return dd.queryAllDeptandUserCount();
+	}
+
+	@Override
+	public Integer checkDeptre(String dname) {
+		if(dname!=null&&!"".equals(dname)) {
+			return dd.checkDeptre(dname);
+		}
+		return null;
 	}
 
 

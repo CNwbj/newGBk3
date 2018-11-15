@@ -7,17 +7,26 @@ public class SysUser implements Serializable {
 	private String loginname;
 	private String loginpwd;
 	private Integer deptno;
+	private Integer roleid;
 	private Integer is_dele;
 	private Dept dept;
 	private SysRole sysrole;
 
-	public boolean checkRole(){
-		if(sysrole!=null&&sysrole.getRoleid()==1){
+	public Integer getRoleid() {
+		return roleid;
+	}
+
+	public void setRoleid(Integer roleid) {
+		this.roleid = roleid;
+	}
+
+	public boolean checkRole() {
+		if (sysrole != null && sysrole.getRoleid() == 1) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public Integer getUserid() {
 		return userid;
 	}

@@ -6,10 +6,19 @@ public class Permission implements Serializable {
 	private Integer perid;
 	private String pname;
 	private Integer parentid;
+	private String parentname;
 	private String percode;
 	private String icon;
 	private String perurl;
 	private Integer is_dele;
+
+	public String getParentname() {
+		return parentname;
+	}
+
+	public void setParentname(String parentname) {
+		this.parentname = parentname;
+	}
 
 	public Integer getPerid() {
 		return perid;
@@ -66,7 +75,5 @@ public class Permission implements Serializable {
 	public void setIs_dele(Integer is_dele) {
 		this.is_dele = is_dele;
 	}
-	
-	
 
 }

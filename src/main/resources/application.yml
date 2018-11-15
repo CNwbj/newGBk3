@@ -10,22 +10,18 @@ spring:
    view:
     prefix: /
     suffix: .jsp
-  redis:
-    host: 10.1.16.44
-    port: 6379   
 server: 
      port: 8080
 
 #Mybatis映射文件
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-#shiro  
-#日志配置
+#引入日志配置路径
 logging:
-  file: E:\logging
-  level:
-    root: INFO
+  file: D:/logging/logging.log
   
+  
+
     
     
   

@@ -11,4 +11,8 @@ public interface IDeptService {
 	
 	public void addDept(Dept dept);
 	
+	public List<Dept> queryAllDeptandUserCount();
+	
+	public Integer checkDeptre(String dname);
+	
 }

@@ -14,7 +14,7 @@
 <link rel="stylesheet" rev="stylesheet" href="css/style.css" type="text/css" media="all" />
 <script language="JavaScript" type="text/javascript">
 function link(){
-	alert('保存成功！');
+		alert('保存成功！');
 	   document.getElementById("fom").action="uc/updateuser";
 	   document.getElementById("fom").submit();
 	}
@@ -25,7 +25,7 @@ function link(){
 </head>
 
 <body class="ContentBody">
-  <form action="" method="post" enctype="multipart/form-data" name="fom" id="fom" target="sypost" >
+  <form action="" method="post" name="fom" id="fom">
   <input type="hidden" value="${user.userid }" name="userid" id="userid" />
 <div class="MainDiv">
 <table width="99%" border="0" cellpadding="0" cellspacing="0" class="CContent">
@@ -52,14 +52,26 @@ function link(){
 					    			<input name="loginname" value="${user.loginname }" readonly class="text" style="width:154px" type="text" size="40" />
 				        		</td>
 					    	</tr>
+					  		<tr>
+					    		<td nowrap align="right" width="13%">部门:</td>
+					    		<td width="41%">
+					    			<select name="deptno">
+									    <c:forEach items="${deptlist}" var="dept">								
+											<option value="${dept.deptno }" <c:if test="${dept.deptno eq user.deptno}">selected="selected"</c:if>>
+											    ${dept.dname }
+											</option>
+									    </c:forEach> 
+									</select>
+				        		</td>
+					    	</tr>
 					  		
 					   		<tr>
 					    		
 					    		<td align="right">用户状态:</td>
 					    		<td>
 					    			<input type="radio" name="is_dele" <c:if test="${1 eq user.is_dele}">checked</c:if> value="1"/>在职
-					    			<input type="radio" name="is_dele" <c:if test="${0 eq user.is_dele}">checked</c:if> value="1"/>休假
-					    			<input type="radio" name="is_dele" <c:if test="${3 eq user.is_dele}">checked</c:if> value="1"/>离职
+					    			<input type="radio" name="is_dele" <c:if test="${0 eq user.is_dele}">checked</c:if> value="0"/>休假
+					    			<input type="radio" name="is_dele" <c:if test="${3 eq user.is_dele}">checked</c:if> value="3"/>离职
                         		</td>
 					  		</tr>
 					  		

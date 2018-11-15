@@ -172,11 +172,10 @@ function a(){
                 			<td height="40" class="font42">
 								<table width="100%" border="0" cellpadding="4" cellspacing="1" bgcolor="#464646" class="newfont03" id="tab">
 				 					<tr class="CTitle" >
-                    					<td height="22" width="" colspan="10" align="center" style="font-size:16px">金蝶物资展示列表</td>
+                    					<td height="22" width="" colspan="8" align="center" style="font-size:16px">金蝶物资展示列表</td>
                   					</tr>
                   					<tr bgcolor="#EEEEEE">
-				    					<th width="4%" align="center" height="30">选择</th>
-                    					<th width="10%">编号</th>
+                  						<th width="5%">编号</th>
                     					<th width="10%">物品名</th>
                     					<th width="8%">库存数量</th>
 										<th width="10%">价格</th>
@@ -184,24 +183,18 @@ function a(){
 										<th width="9%">仓库地址</th>
 										<th width="12%">物资详情</th>
 										<th width="9%">仓库状态</th>
-										<th width="9%">操作</th>
                   					</tr>
                   					<c:if test="${!empty mllist}">
 					<c:forEach items="${mllist }" var="ml">
 				                  <tr bgcolor="#FFFFFF">
-								    <td height="20"><input type="checkbox" name="selectBooks" value="${ml.material_id }"/></td>
 										<td >${ml.material_id }</td>
 										<td >${ml.material_name }</td>
-										<td>${ml.material_price}</td>
 										<td >${ml.depot.depot_sum}</td>
+										<td>￥${ml.material_price}</td>
 										<td ><img style="width: 250px;height: 150px;" src="${ml.material_url}"/></td>
 										<td >${ml.depot.depot_name}</td>
 										<td >${ml.material_details}</td>
 										<td >${ml.state.statename}</td>
-				                    <td>
-				                    	<a href="#">编辑|</a>
-										<a href="#">删除</a>
-									</td>
 				                  </tr>
 				                  
 				                  </c:forEach>

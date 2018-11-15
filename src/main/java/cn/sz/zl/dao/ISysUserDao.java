@@ -1,7 +1,7 @@
 package cn.sz.zl.dao;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -29,7 +29,11 @@ public interface ISysUserDao {
 	
 	public void deleteSysUser(Integer userid);
 	
+	public void deleteUsertorole(Integer userid);
+	
 	public SysUser queryUserByUserid(Integer userid);
 	
-	public void updateUserRole(HashMap<String, Integer> urmap);
+	public void updateUserRole(Map<String, Integer> urmap);
+	
+	public void addUsertorole(Map<String, Integer> urmap);
 }

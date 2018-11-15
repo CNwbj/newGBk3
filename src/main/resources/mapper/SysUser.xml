@@ -12,6 +12,12 @@
 		<association property="dept" column="deptno" select="cn.sz.zl.dao.IDeptDao.queryDeptByDeptno"></association>
 	</resultMap>
 	
+	<resultMap type="cn.sz.zl.pojo.SysUser" id="userdeptrole">
+		<id property="userid" column="userid"/>
+		<association property="sysrole" column="roleid" select="cn.sz.zl.dao.ISysRoleDao.queryRoleAndPermissionByRoleid"></association>
+		<association property="dept" column="deptno" select="cn.sz.zl.dao.IDeptDao.queryDeptByDeptno"></association>
+	</resultMap>
+	
 	<select id="checkLogIn" parameterType="cn.sz.zl.pojo.SysUser" resultMap="userrole">
 		select userid,loginname,loginpwd,deptno,is_dele from sysuser where loginname = #{loginname} and loginpwd = #{loginpwd} and is_dele = 1
 	</select>
@@ -24,8 +30,8 @@
 		select userid,loginname,loginpwd,deptno,is_dele from sysuser where loginname = #{loginname}
 	</select>
 	
-	<select id="queryAllUser" parameterType="cn.sz.zl.util.SysUserSearchCondition" resultMap="userdept">
-		select * from
+	<select id="queryAllUser" parameterType="cn.sz.zl.util.SysUserSearchCondition" resultMap="userdeptrole">
+		<!-- select * from
 			(select t.rn,t.userid,t.loginname,t.loginpwd,t.deptno,t.is_dele from
 				(select rownum rn,userid,loginname,loginpwd,deptno,is_dele from sysuser
 					<where>
@@ -34,15 +40,28 @@
 						<if test="deptno!=null"> and deptno = #{deptno} </if>
 					</where>	
 				)t where rn > #{start})
-		where rn <![CDATA[<=]]> #{end}
+		where rn <![CDATA[<=]]> #{end} -->
+		
+	      select t.rn,t.userid,t.loginname,t.loginpwd,t.deptno,t.is_dele ,t.roleid from
+	        (select rownum rn,u.userid,u.loginname,u.loginpwd,u.deptno,u.is_dele, utr.roleid from
+	         sysuser u left join usertorole utr on u.userid=utr.userid left join sysrole sr on utr.roleid=sr.roleid 
+	         <where>
+				<if test="loginname!=null"> and u.loginname like '%${loginname}%' </if>
+				<if test="is_dele!=null"> and u.is_dele = #{is_dele} </if>
+				<if test="deptno!=null"> and u.deptno = #{deptno} </if>
+				<if test="roleid!=null"> and utr.roleid = #{roleid} </if>
+			 </where>         
+	        )t where rn > #{start} and rn <![CDATA[<=]]> #{end}
 	</select>
 	
 	<select id="countAllUser" parameterType="cn.sz.zl.util.SysUserSearchCondition" resultType="java.lang.Integer">
-		select count(userid) from sysuser
+		select count(u.userid) from 
+		sysuser u left join usertorole utr on u.userid=utr.userid left join sysrole sr on utr.roleid=sr.roleid 
 		<where>
-			<if test="loginname!=null"> and loginname like '%${loginname}%' </if>
-			<if test="is_dele!=null"> and is_dele = #{is_dele} </if>
-			<if test="deptno!=null"> and deptno = #{deptno} </if>
+			<if test="loginname!=null"> and u.loginname like '%${loginname}%' </if>
+			<if test="is_dele!=null"> and u.is_dele = #{is_dele} </if>
+			<if test="deptno!=null"> and u.deptno = #{deptno} </if>
+			<if test="roleid!=null"> and utr.roleid = #{roleid} </if>
 		</where>
 	</select>
 	
@@ -54,11 +73,14 @@
 		insert into sysuser values(sysuserseq.nextval,#{loginname},#{loginpwd},#{deptno},#{is_dele})
 	</insert>
 	
+	<insert id="addUsertorole" parameterType="java.util.Map">
+		insert into usertorole values(usertoleseq.nextval,#{userid},#{roleid},1) 
+	</insert>
+	
 	<update id="updateSysUser" parameterType="cn.sz.zl.pojo.SysUser">
 		update sysuser
 			<set>
 				<if test="loginname!= null">loginname=#{loginname}, </if>
-				<if test="loginpwd!= null">loginpwd=#{loginpwd}, </if>
 				<if test="deptno!= null">deptno=#{deptno}, </if>
 				<if test="is_dele!= null">is_dele=#{is_dele}, </if>
 			</set>
@@ -69,11 +91,18 @@
 		update sysuser set is_dele = 3 where userid=#{userid}
 	</update>
 	
-	<select id="queryUserByUserid" parameterType="java.lang.Integer" resultMap="userrole">
-		select userid,loginname,loginpwd,deptno,is_dele from sysuser where userid = #{userid}
+	<update id="deleteUsertorole" parameterType="java.lang.Integer">
+		update usertorole set is_dele = 0 where userid=#{userid}
+	</update>
+	
+	<select id="queryUserByUserid" parameterType="java.lang.Integer" resultMap="userdeptrole">
+		<!-- select userid,loginname,loginpwd,deptno,is_dele from sysuser where userid = #{userid} -->
+		select rownum rn,u.userid,u.loginname,u.loginpwd,u.deptno,u.is_dele, utr.roleid from 
+		sysuser u left join usertorole utr on u.userid=utr.userid left join sysrole sr on utr.roleid=sr.roleid 
+		where u.userid = #{userid}
 	</select>
 	
-	<update id="updateUserRole" parameterType="java.util.HashMap">
+	<update id="updateUserRole" parameterType="java.util.Map">
 		update usertorole set roleid = #{roleid} where userid = #{userid}
 	</update>
 	
