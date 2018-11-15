@@ -8,12 +8,14 @@
 		<association property="material" column="material_id" select="cn.sz.zl.dao.IMaterialDAO.findMaterialInfoById" ></association>
 		<association property="payment" column="c_paymentid" select="cn.sz.zl.dao.IPaymentDAO.findPaymentById" ></association>
 		<association property="state" column="stateid" select="cn.sz.zl.dao.IStateDAO.findStateById" ></association>
+		<association property="state2" column="column2" select="cn.sz.zl.dao.IStateDAO.findStateById" ></association>
 	</resultMap> 
 	
 	<select id="findAllInfo" parameterType="cn.sz.zl.query.FHQuery" resultMap="findall" >
-		select s.*,c.*,m.*,cp.payment,st.statename
-		from sale s,customer c,material m,c_payment cp,state st
-		where s.c_id = c.c_id and s.material_id = m.material_id and s.c_paymentid = cp.c_paymentid and s.stateid = st.stateid
+		select s.*,c.*,m.*,cp.payment,st.statename,st2.statename
+		from sale s,customer c,material m,c_payment cp,state st,state st2
+		where s.c_id = c.c_id and s.material_id = m.material_id and s.c_paymentid = cp.c_paymentid and s.stateid = st.stateid and s.column2 = st2.stateid
+		order by s.create_date
 			<if test='saleid!=null and saleid!="" '>
 				and saleid = #{saleid}
 			</if>
@@ -37,9 +39,11 @@
 			</if>
 			
 	</select>
+	<!-- 根据ID查询 -->
 	<select id="querySale" parameterType="int" resultType="cn.sz.zl.pojo.Sale" >
 		select * from sale where saleid=#{saleid}
 	</select>
+	<!-- 7=已经审批 -->
 	<update id="updateStateid" parameterType="int">
 		update sale set stateid = 7 where saleid = #{saleid}
 	</update>
@@ -76,10 +80,29 @@
 	<!-- submit -->
 	<select id="submit" parameterType="java.util.Map" resultType="int" >
 		select q_price from quotation where c_id=#{c_id} and m_id=#{m_id} and stateid = 14
-	</select>
+	</select> 
 	<!-- 生成sale订单 -->
 	<insert id="saleorder" parameterType="java.util.Map">
-		insert into sale values (saleid_seq.nextval,#{c_id},#{c_paymentid},#{c_id},
-		#{material_id},#{price},sysdate,#{goodscount},sysdate,sysdate,sysdate,sysdate,7,7,null,#{sendaddr},6,7,6)
+		insert into sale values (saleid_seq.nextval,#{c_paymentid},#{c_id},
+		#{m_id},#{realprice},null,#{goodscount},to_date(sysdate+3),null,null,sysdate,6,6,null,#{sendaddr},6,6,6,9,24)
 	</insert>
+	<!-- 是否议价通过 -->
+	<select id="bargaining" parameterType="java.util.Map" resultType="cn.sz.zl.pojo.TalkPrice">
+		select * from talkprice where c_id=#{c_id} and material_id=#{m_id} and stateid = 14
+	</select>
+	<!-- 修改收货状态 25=确认收货 -->
+	<update id="updateColumn6" parameterType="int">
+		update sale set column6 = 25 where saleid=#{saleid}
+	</update>
+	<!-- 批量修改 -->
+	<update id="updateAll" parameterType="java.util.List">
+		update sale set stateid = 7 where saleid in
+		 <foreach collection="list" index="index" item="item" open="(" separator="," close=")">   
+            #{item}   
+         </foreach>
+	</update>
+	<!-- 拿到客户付款 -->
+	<select id="queryPay" parameterType="int" resultType="int">
+	select pay from sale where saleid = #{saleid}
+	</select>
 </mapper>
