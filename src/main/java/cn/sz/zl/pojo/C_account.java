@@ -1,4 +1,4 @@
-package cn.sz.zl.pojo;
+﻿package cn.sz.zl.pojo;
 
 import java.io.Serializable;
 /**
@@ -26,6 +26,9 @@ public class C_account implements Serializable {
 	}
 	public String getC_account_num() {
 		return c_account_num;
+	}
+	public void setC_account_num(String c_account_num) {
+		this.c_account_num = c_account_num;
 	}
 	public void setC_account_num(String c_account_num) {
 		this.c_account_num = c_account_num;
